@@ -9,7 +9,8 @@
     "start-dev": "nodemon src/main.js"
   },
   "prisma": {
-    "seed": "node lib/prisma/seed/seed.js"
+    "seed": "node lib/prisma/seed/seed.js",
+    "schema": "lib/prisma/schema.prisma"
   },
   "jest": {
     "transform": {

@@ -1,0 +1,44 @@
+{
+  "name": "book-order",
+  "version": "1.0.0",
+  "description": "Book Order backend app",
+  "main": "src/main.js",
+  "type": "module",
+  "scripts": {
+    "test": "jest -i",
+    "start-dev": "nodemon src/main.js"
+  },
+  "prisma": {
+    "seed": "node lib/prisma/seed/seed.js"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.[t|j]sx?$": "babel-jest"
+    }
+  },
+  "author": "Wahyu Purnomo Ady",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^5.16.2",
+    "bcrypt": "^5.1.1",
+    "express": "^4.19.2",
+    "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "uuid": "^10.0.0",
+    "winston": "^3.13.1"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.24.8",
+    "@types/bcrypt": "^5.0.2",
+    "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.12",
+    "@types/supertest": "^6.0.2",
+    "babel-jest": "^29.7.0",
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.4",
+    "prisma": "^5.16.2",
+    "supertest": "^7.0.0"
+  }
+}

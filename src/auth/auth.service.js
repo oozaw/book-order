@@ -45,7 +45,13 @@ const register = async (request) => {
 
 
       const lastMemberCode = lastMember ? lastMember.code : 0;
-      const memberCode = `M${(parseInt(lastMemberCode.replace("M", "")) + 1).toString().padStart(3, "0")}`;
+
+      let memberCode;
+      if (lastMemberCode === 0) {
+         memberCode = "M001";
+      } else {
+         memberCode = `M${(parseInt(lastMemberCode.replace("M", "")) + 1).toString().padStart(3, "0")}`;
+      }
 
       const member = await prisma.member.create({
          data: {

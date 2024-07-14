@@ -4,7 +4,7 @@ import {authRouter} from "../auth/auth.router.js";
 import {errorMiddleware} from "../app/middelware/error.middleware.js";
 import {bookRouter} from "../book/book.router.js";
 import {memberRouter} from "../member/member.router.js";
-
+import cronJobs from "./cron.js";
 
 export const app = express();
 
@@ -21,3 +21,5 @@ app.use(memberRouter);
 // middleware
 app.use(errorMiddleware);
 
+// cron jobs
+cronJobs.start();

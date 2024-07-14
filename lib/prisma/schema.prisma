@@ -25,7 +25,7 @@ enum TransactionStatus {
 
 enum PenaltyStatus {
   ACTIVE
-  PAID
+  INACTIVE
 }
 
 model User {

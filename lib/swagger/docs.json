@@ -68,61 +68,6 @@
         }
       }
     },
-    "/auth/logout": {
-      "post": {
-        "tags": [
-          "Auth"
-        ],
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "summary": "Logging out authenticated user",
-        "description": "Logging out user and delete the api key",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "userId": {
-                    "type": "string"
-                  }
-                }
-              },
-              "example": {
-                "userId": 1
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successfully logged out",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "integer"
-                    },
-                    "status": {
-                      "type": "string"
-                    }
-                  }
-                },
-                "example": {
-                  "code": 200,
-                  "status": "OK"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/books": {
       "get": {
         "tags": [
@@ -262,63 +207,6 @@
           }
         }
       },
-      "put": {
-        "tags": [
-          "Books"
-        ],
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "summary": "Update a book",
-        "description": "Update a book",
-        "parameters": [
-          {
-            "name": "book_id",
-            "in": "path",
-            "description": "Book id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "title": {
-                    "type": "string",
-                    "nullable": true
-                  },
-                  "author": {
-                    "type": "string",
-                    "nullable": true
-                  },
-                  "status": {
-                    "type": "string",
-                    "nullable": true
-                  }
-                }
-              },
-              "example": {
-                "title": "The Great Gatsby",
-                "author": "F. Scott Fitzgerald",
-                "status": "AVAILABLE"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "$ref": "#/components/responses/BookResponse"
-          }
-        }
-      },
       "delete": {
         "tags": [
           "Books"
@@ -382,75 +270,6 @@
         "responses": {
           "200": {
             "$ref": "#/components/responses/ListMemberResponse"
-          }
-        }
-      }
-    },
-    "/members/{member_id}": {
-      "get": {
-        "tags": [
-          "Members"
-        ],
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "summary": "Get a member",
-        "description": "Get a member",
-        "parameters": [
-          {
-            "name": "member_id",
-            "in": "path",
-            "description": "Member id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successfully retrieved a member",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SuccessResponse"
-                },
-                "example": {
-                  "code": 200,
-                  "status": "OK",
-                  "data": {
-                    "id": 1,
-                    "member_id": 1,
-                    "name": "John Doe",
-                    "email": "johndoe@email.com",
-                    "createdAt": "2021-01-01T00:00:00Z",
-                    "updatedAt": "2021-01-01T00:00:00.000Z",
-                    "borrowedBooks": [
-                      [
-                        {
-                          "id": "1",
-                          "title": "The Great Gatsby",
-                          "author": "F. Scott Fitzgerald",
-                          "status": "AVAILABLE",
-                          "createdAt": "2021-01-01T00:00:00Z",
-                          "updatedAt": "2021-01-01T00:00:00.000Z"
-                        },
-                        {
-                          "id": "2",
-                          "title": "The Catcher in the Rye",
-                          "author": "J.D. Salinger",
-                          "status": "AVAILABLE",
-                          "createdAt": "2021-01-01T00:00:00Z",
-                          "updatedAt": "2021-01-01T00:00:00.000Z"
-                        }
-                      ]
-                    ]
-                  }
-                }
-              }
-            }
           }
         }
       }

@@ -51,9 +51,9 @@ beforeEach(async () => {
       email: "test@email.com",
       password: "password"
    });
-
    token = response.body.data.token;
    let member_code = response.body.data.member_code;
+
 
    member = await prismaClient.member.findUnique({
       where: {
@@ -65,6 +65,92 @@ beforeEach(async () => {
       data: books
    });
 });
+
+describe("GET '/api/members", () => {
+   let members = [
+      {
+         name: "Member #1",
+         email: "membertest1@email.com",
+         password: "password"
+      },
+      {
+         name: "Member #2",
+         email: "membertest2@email.com",
+         password: "password"
+      },
+      {
+         name: "Member #3",
+         email: "membertest3@email.com",
+         password: "password"
+      },
+      {
+         name: "Member #4",
+         email: "membertest4@email.com",
+         password: "password"
+      },
+      {
+         name: "Member #5",
+         email: "membertest5@email.com",
+         password: "password"
+      }
+   ];
+
+   beforeAll(async () => {
+      await prismaClient.user.deleteMany({
+         where: {
+            email: {
+               in: members.map(member => member.email)
+            }
+         }
+      });
+
+      for (let i = 0; i < members.length; i++) {
+         const user = await supertest(app).post("/api/auth/register").send(members[i]);
+         members[i].code = user.body.data.member_code;
+      }
+      console.log(members);
+   });
+
+   it("should return list of members", async () => {
+      const result = await supertest(app)
+         .get("/api/members")
+         .set("Authorization", `Bearer ${token}`);
+
+      console.log(result.body);
+
+      expect(result.statusCode).toBe(200);
+      expect(result.body.data.length).toBeGreaterThan(0);
+   });
+
+   it("should return 404 when member not found", async () => {
+      await prismaClient.member.deleteMany();
+
+      const result = await supertest(app)
+         .get("/api/members")
+         .set("Authorization", `Bearer ${token}`);
+
+      expect(result.statusCode).toBe(404);
+   });
+
+   it("should return 401 when not authorized", async () => {
+      const result = await supertest(app)
+         .get("/api/members");
+
+      console.log(result.body);
+
+      expect(result.statusCode).toBe(401);
+   });
+
+   it("should return 401 if token is invalid", async () => {
+      const result = await supertest(app)
+         .get("/api/members")
+         .set("Authorization", `Bearer invalid_token`);
+
+      console.log(result.body);
+
+      expect(result.statusCode).toBe(401);
+   });
+})
 
 describe("POST '/api/members/:id/borrow'", () => {
    it("should successfully borrow a book", async () => {
@@ -320,4 +406,4 @@ describe("POST '/api/members/:id/return'", () => {
       expect(result.statusCode).toBe(200);
       expect(result.body.data.penalty).not.toBeNull();
    });
-})
+});

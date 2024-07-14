@@ -145,7 +145,10 @@ const borrowBook = async (request, memberId) => {
             code: data.book_code
          },
          data: {
-            status: "BORROWED"
+            status: "BORROWED",
+            stock: {
+               decrement: 1
+            }
          }
       });
 
@@ -222,7 +225,10 @@ const returnBook = async (request, memberId) => {
             code: transaction.book_code
          },
          data: {
-            status: "AVAILABLE"
+            status: "AVAILABLE",
+            stock: {
+               increment: 1
+            }
          }
       });
 

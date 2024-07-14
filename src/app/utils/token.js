@@ -3,7 +3,8 @@ import jwt from "jsonwebtoken";
 const generateToken = async (user) => {
    return jwt.sign(
       {
-         user_id: user.user_id,
+         user_id: user.id,
+         member_id: user.member_id,
          name: user.name,
          email: user.email,
       },

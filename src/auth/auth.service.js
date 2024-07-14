@@ -21,24 +21,33 @@ const register = async (request) => {
 
    const hashedPassword = await bcrypt.hash(user.password, 10);
 
-   const result = await prismaClient.user.create({
-      data: {
-         name: user.name,
-         email: user.email,
-         password: hashedPassword
-      },
-      select: {
-         id: true,
-         name: true,
-         email: true,
-         createdAt: true,
-         updatedAt: true
-      }
+   return prismaClient.$transaction(async (prisma) => {
+      const result = await prisma.user.create({
+         data: {
+            name: user.name,
+            email: user.email,
+            password: hashedPassword
+         },
+         select: {
+            id: true,
+            name: true,
+            email: true,
+            createdAt: true,
+            updatedAt: true
+         }
+      });
+
+      const member = await prisma.member.create({
+         data: {
+            user_id: result.id
+         }
+      });
+
+      result.member_id = member.id;
+      result.token = await generateToken(result);
+
+      return result;
    });
-
-   result.token = await generateToken(result);
-
-   return result;
 };
 
 const login = async (request) => {
@@ -47,12 +56,28 @@ const login = async (request) => {
    const user = await prismaClient.user.findUnique({
       where: {
          email: request.email
+      },
+      select: {
+         id: true,
+         name: true,
+         email: true,
+         password: true,
+         createdAt: true,
+         updatedAt: true,
+         member: {
+            select: {
+               id: true
+            }
+         }
       }
    });
 
    if (!user) {
       throw new ResponseError("Unauthorized", 401, "Invalid email or password");
    }
+
+   user.member_id = user.member.id;
+   delete user.member;
 
    const isPasswordValid = await bcrypt.compare(request.password, user.password);
 
@@ -64,10 +89,11 @@ const login = async (request) => {
 
    return {
       id: user.id,
+      member_id: user.member_id,
       name: user.name,
       email: user.email,
-      createdAt: user.created_at,
-      updatedAt: user.updated_at,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
       token
    };
 }

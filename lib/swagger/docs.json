@@ -1,0 +1,916 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Book Order API",
+    "description": "Backend API for Book Order App",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api"
+    }
+  ],
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Login authentication",
+        "description": "Login authentication for user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              },
+              "example": {
+                "email": "johndoe@email.com",
+                "password": "password"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/AuthResponse"
+          }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Register authentication",
+        "description": "Register authentication for new user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              },
+              "examples": {
+                "User": {
+                  "$ref": "#/components/examples/User"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/AuthResponse"
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "Logging out authenticated user",
+        "description": "Logging out user and delete the api key",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userId": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "userId": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully logged out",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "status": "OK"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/books": {
+      "get": {
+        "tags": [
+          "Books"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "Get all books",
+        "description": "Get all books",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PageNumber"
+          },
+          {
+            "$ref": "#/components/parameters/PageLimit"
+          },
+          {
+            "$ref": "#/components/parameters/BooksAuthor"
+          },
+          {
+            "$ref": "#/components/parameters/BooksTitle"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/ListBookResponse"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Books"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "Add a new book",
+        "description": "Add a new book",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "author": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "type": "string",
+                    "required": false,
+                    "default": "AVAILABLE"
+                  }
+                }
+              },
+              "example": {
+                "title": "The Great Gatsby",
+                "author": "F. Scott Fitzgerald"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/BookResponse"
+          }
+        }
+      }
+    },
+    "/books/available": {
+      "get": {
+        "tags": [
+          "Books"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "Get all available books",
+        "description": "Get all available books",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PageNumber"
+          },
+          {
+            "$ref": "#/components/parameters/PageLimit"
+          },
+          {
+            "$ref": "#/components/parameters/BooksAuthor"
+          },
+          {
+            "$ref": "#/components/parameters/BooksTitle"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/ListBookResponse"
+          }
+        }
+      }
+    },
+    "/books/{book_id}": {
+      "get": {
+        "tags": [
+          "Books"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "Get a book",
+        "description": "Get a book",
+        "parameters": [
+          {
+            "name": "book_id",
+            "in": "path",
+            "description": "Book id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/BookResponse"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Books"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "Update a book",
+        "description": "Update a book",
+        "parameters": [
+          {
+            "name": "book_id",
+            "in": "path",
+            "description": "Book id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "author": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "status": {
+                    "type": "string",
+                    "nullable": true
+                  }
+                }
+              },
+              "example": {
+                "title": "The Great Gatsby",
+                "author": "F. Scott Fitzgerald",
+                "status": "AVAILABLE"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/BookResponse"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Books"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "Delete a book",
+        "description": "Delete a book",
+        "parameters": [
+          {
+            "name": "book_id",
+            "in": "path",
+            "description": "Book id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully deleted a book",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "code": 200,
+                  "status": "OK"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/members": {
+      "get": {
+        "tags": [
+          "Members"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "Get all members",
+        "description": "Get all members",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/ListMemberResponse"
+          }
+        }
+      }
+    },
+    "/members/{member_id}": {
+      "get": {
+        "tags": [
+          "Members"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "Get a member",
+        "description": "Get a member",
+        "parameters": [
+          {
+            "name": "member_id",
+            "in": "path",
+            "description": "Member id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved a member",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                },
+                "example": {
+                  "code": 200,
+                  "status": "OK",
+                  "data": {
+                    "id": 1,
+                    "member_id": 1,
+                    "name": "John Doe",
+                    "email": "johndoe@email.com",
+                    "createdAt": "2021-01-01T00:00:00Z",
+                    "updatedAt": "2021-01-01T00:00:00.000Z",
+                    "borrowedBooks": [
+                      [
+                        {
+                          "id": "1",
+                          "title": "The Great Gatsby",
+                          "author": "F. Scott Fitzgerald",
+                          "status": "AVAILABLE",
+                          "createdAt": "2021-01-01T00:00:00Z",
+                          "updatedAt": "2021-01-01T00:00:00.000Z"
+                        },
+                        {
+                          "id": "2",
+                          "title": "The Catcher in the Rye",
+                          "author": "J.D. Salinger",
+                          "status": "AVAILABLE",
+                          "createdAt": "2021-01-01T00:00:00Z",
+                          "updatedAt": "2021-01-01T00:00:00.000Z"
+                        }
+                      ]
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/members/{member_id}/borrow": {
+      "post": {
+        "tags": [
+          "Members"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "Borrow a book for members",
+        "description": "Borrow a book for members",
+        "parameters": [
+          {
+            "name": "member_id",
+            "in": "path",
+            "description": "Member id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "book_id": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "book_id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully borrowed a book",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                },
+                "example": {
+                  "code": 200,
+                  "status": "OK",
+                  "data": {
+                    "book_id": 1,
+                    "member_id": 1,
+                    "status": "ACTIVE",
+                    "returnedAt": null,
+                    "createdAt": "2021-01-01T00:00:00Z",
+                    "updatedAt": "2021-01-01T00:00:00.000Z"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/members/{member_id}/return": {
+      "post": {
+        "tags": [
+          "Members"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "Return a book",
+        "description": "Return a book",
+        "parameters": [
+          {
+            "name": "member_id",
+            "in": "path",
+            "description": "Member id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "book_id": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "book_id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully returned a book",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                },
+                "example": {
+                  "code": 200,
+                  "status": "OK",
+                  "data": {
+                    "book_id": 1,
+                    "member_id": 1,
+                    "status": "RETURNED",
+                    "returnedAt": "2021-01-01T00:00:00Z",
+                    "createdAt": "2021-01-01T00:00:00Z",
+                    "updatedAt": "2021-01-01T00:00:00.000Z"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "description": "Authentication token for RESTful Theatre+ api",
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "parameters": {
+      "UserId": {
+        "name": "userId",
+        "description": "Id that represent specific user",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "minLength": 1
+        },
+        "examples": {
+          "User #1 ": {
+            "value": 1
+          },
+          "User #2": {
+            "value": 2
+          }
+        }
+      },
+      "PageNumber": {
+        "name": "page",
+        "in": "query",
+        "description": "Page number",
+        "required": false,
+        "schema": {
+          "type": "integer"
+        }
+      },
+      "PageLimit": {
+        "name": "limit",
+        "in": "query",
+        "description": "Limit per page",
+        "required": false,
+        "schema": {
+          "type": "integer"
+        }
+      },
+      "BooksAuthor": {
+        "name": "author",
+        "in": "query",
+        "description": "Author name",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "BooksTitle": {
+        "name": "title",
+        "in": "query",
+        "description": "Book title",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "schemas": {
+      "SuccessResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object"
+          }
+        }
+      },
+      "SuccessArrayResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array"
+          }
+        }
+      },
+      "RegisterRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "email": {
+            "type": "string",
+            "minLength": 1
+          },
+          "password": {
+            "type": "string",
+            "minLength": 6
+          }
+        }
+      },
+      "LoginRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "minLength": 1
+          },
+          "password": {
+            "type": "string",
+            "minLength": 6
+          }
+        }
+      }
+    },
+    "responses": {
+      "AuthResponse": {
+        "description": "Successfully authenticated",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/SuccessResponse"
+            },
+            "example": {
+              "code": 200,
+              "status": "OK",
+              "data": {
+                "token": "eySoihfdsaf340ihni2oknoda......",
+                "id": "1",
+                "member_id": "1",
+                "name": "John Doe",
+                "email": "johdndoe@email.com",
+                "createdAt": "2021-01-01T00:00:00Z",
+                "updatedAt": "2021-01-01T00:00:00.000Z"
+              }
+            }
+          }
+        }
+      },
+      "BookResponse": {
+        "description": "Single book response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/SuccessResponse"
+            },
+            "example": {
+              "$ref": "#/components/examples/Book"
+            }
+          }
+        }
+      },
+      "ListBookResponse": {
+        "description": "List of books response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/SuccessArrayResponse"
+            },
+            "example": {
+              "$ref": "#/components/examples/BooksResponse"
+            }
+          }
+        }
+      },
+      "ListMemberResponse": {
+        "description": "List of members response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/SuccessArrayResponse"
+            },
+            "example": {
+              "code": 200,
+              "status": "OK",
+              "data": [
+                {
+                  "id": "1",
+                  "member_id": "1",
+                  "name": "John Doe",
+                  "email": "johndoe@email.com",
+                  "createdAt": "2021-01-01T00:00:00Z",
+                  "updatedAt": "2021-01-01T00:00:00.000Z",
+                  "borrowedBooks": [
+                    {
+                      "id": "1",
+                      "code": "TGG-12",
+                      "title": "The Great Gatsby",
+                      "author": "F. Scott Fitzgerald",
+                      "status": "AVAILABLE",
+                      "createdAt": "2021-01-01T00:00:00Z",
+                      "updatedAt": "2021-01-01T00:00:00.000Z"
+                    },
+                    {
+                      "id": "2",
+                      "code": "SAL-12",
+                      "title": "The Catcher in the Rye",
+                      "author": "J.D. Salinger",
+                      "status": "AVAILABLE",
+                      "createdAt": "2021-01-01T00:00:00Z",
+                      "updatedAt": "2021-01-01T00:00:00.000Z"
+                    }
+                  ]
+                },
+                {
+                  "id": "2",
+                  "member_id": "2",
+                  "name": "Nana",
+                  "email": "nana@email.com",
+                  "createdAt": "2021-01-01T00:00:00Z",
+                  "updatedAt": "2021-01-01T00:00:00.000Z",
+                  "borrowedBooks": []
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "examples": {
+      "User": {
+        "description": "Example of user req body",
+        "value": {
+          "name": "John Doe",
+          "email": "johndoe@email.com",
+          "password": "password"
+        }
+      },
+      "UsersResponse": {
+        "value": {
+          "code": 200,
+          "status": "OK",
+          "data": [
+            {
+              "id": "1",
+              "member_id": "1",
+              "name": "John Doe",
+              "email": "johdndoe@email.com",
+              "createdAt": "2021-01-01T00:00:00Z",
+              "updatedAt": "2021-01-01T00:00:00.000Z"
+            },
+            {
+              "id": "2",
+              "member_id": "2",
+              "name": "Nana",
+              "email": "nna@email.com",
+              "createdAt": "2021-01-01T00:00:00Z",
+              "updatedAt": "2021-01-01T00:00:00.000Z"
+            }
+          ]
+        }
+      },
+      "Book": {
+        "value": {
+          "id": "1",
+          "title": "The Great Gatsby",
+          "code": "TGG-12",
+          "author": "F. Scott Fitzgerald",
+          "status": "AVAILABLE",
+          "createdAt": "2021-01-01T00:00:00Z",
+          "updatedAt": "2021-01-01T00:00:00.000Z"
+        }
+      },
+      "Books": {
+        "value": [
+          {
+            "id": "1",
+            "code": "TGG-12",
+            "title": "The Great Gatsby",
+            "author": "F. Scott Fitzgerald",
+            "status": "AVAILABLE",
+            "createdAt": "2021-01-01T00:00:00Z",
+            "updatedAt": "2021-01-01T00:00:00.000Z"
+          },
+          {
+            "id": "2",
+            "code": "SAL-23",
+            "title": "The Catcher in the Rye",
+            "author": "J.D. Salinger",
+            "status": "AVAILABLE",
+            "createdAt": "2021-01-01T00:00:00Z",
+            "updatedAt": "2021-01-01T00:00:00.000Z"
+          }
+        ]
+      },
+      "BooksResponse": {
+        "value": {
+          "code": 200,
+          "status": "OK",
+          "data": [
+            {
+              "id": "1",
+              "code": "TGG-12",
+              "title": "The Great Gatsby",
+              "author": "F. Scott Fitzgerald",
+              "status": "AVAILABLE",
+              "createdAt": "2021-01-01T00:00:00Z",
+              "updatedAt": "2021-01-01T00:00:00.000Z"
+            },
+            {
+              "id": "2",
+              "code": "SAL-22",
+              "title": "The Catcher in the Rye",
+              "author": "J.D. Salinger",
+              "status": "AVAILABLE",
+              "createdAt": "2021-01-01T00:00:00Z",
+              "updatedAt": "2021-01-01T00:00:00.000Z"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

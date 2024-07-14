@@ -26,7 +26,9 @@ const errorMiddleware = (err, req, res, next) => {
 
       WebResponse.error(res, 400, errors);
    } else {
-      console.log("Error");
+      // get instance type error
+      const instance = err.constructor.name;
+      console.log("Error: ", (instance));
       WebResponse.error(res, 500, err.message);
    }
 }

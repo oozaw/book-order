@@ -2,7 +2,7 @@ import * as http from "http";
 
 class WebResponse {
 
-   static success(res, statusCode, data = null,) {
+   static success(res, statusCode, data = null) {
       let response = {
          status: http.STATUS_CODES[statusCode].toUpperCase(),
          code: statusCode,

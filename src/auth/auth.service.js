@@ -37,13 +37,22 @@ const register = async (request) => {
          }
       });
 
-      const member = await prisma.member.create({
-         data: {
-            user_id: result.id
+      const lastMember = await prisma.member.findFirst({
+         orderBy: {
+            id: "desc"
          }
       });
 
-      result.member_id = member.id;
+      const lastMemberId = lastMember ? lastMember.id : 0;
+
+      const member = await prisma.member.create({
+         data: {
+            user_id: result.id,
+            code: `M${(lastMemberId + 1).toString().padStart(3, "0")}`
+         }
+      });
+
+      result.member_code= member.code;
       result.token = await generateToken(result);
 
       return result;
@@ -66,7 +75,7 @@ const login = async (request) => {
          updatedAt: true,
          member: {
             select: {
-               id: true
+               code: true
             }
          }
       }
@@ -76,7 +85,7 @@ const login = async (request) => {
       throw new ResponseError("Unauthorized", 401, "Invalid email or password");
    }
 
-   user.member_id = user.member.id;
+   user.member_code = user.member.code;
    delete user.member;
 
    const isPasswordValid = await bcrypt.compare(request.password, user.password);
@@ -89,7 +98,7 @@ const login = async (request) => {
 
    return {
       id: user.id,
-      member_id: user.member_id,
+      member_code: user.member_code,
       name: user.name,
       email: user.email,
       createdAt: user.createdAt,

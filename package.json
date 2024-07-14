@@ -8,7 +8,7 @@
     "start-dev": "nodemon src/main.js"
   },
   "prisma": {
-    "seed": "node lib/prisma/seed/seed.js",
+    "seed": "node lib/prisma/seed/seeder.js",
     "schema": "lib/prisma/schema.prisma"
   },
   "jest": {
@@ -33,6 +33,7 @@
   },
   "devDependencies": {
     "@babel/preset-env": "^7.24.8",
+    "@faker-js/faker": "^8.4.1",
     "@types/bcrypt": "^5.0.2",
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.12",

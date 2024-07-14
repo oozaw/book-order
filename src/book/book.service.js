@@ -2,6 +2,7 @@ import {validate} from "../app/validation/index.js";
 import {createBookValidation} from "./book.validation.js";
 import {prismaClient} from "../config/database.js";
 import {ResponseError} from "../app/response/error.response.js";
+import {paginate} from "../app/utils/pagination.js";
 
 const create = async (request) => {
    const data = validate(createBookValidation, request);
@@ -64,44 +65,7 @@ const getMany = async (query) => {
       throw new ResponseError("Not Found", 404, "Books not found");
    }
 
-   // pagination
-   const page = Number(query.page) || 1;
-   const limit = Number(query.limit) || 10;
-   const totalPage = Math.ceil(result.length / limit);
-
-   const metadata = {
-      currentPage: page,
-      limit: limit,
-      totalItems: result.length,
-      totalPage: totalPage
-   }
-
-   const startIndex = (page - 1) * limit;
-   const endIndex = page * limit;
-
-   let data = result.slice(startIndex, endIndex);
-
-   if (endIndex < result.length) {
-      metadata.next = {
-         page: page + 1,
-         limit: limit
-      }
-   } else {
-      metadata.next = null;
-   }
-
-   if (startIndex > 0) {
-      metadata.previous = {
-         page: page - 1,
-         limit: limit
-      }
-   } else {
-      metadata.previous = null;
-   }
-
-   data.metadata = metadata;
-
-   return data;
+   return paginate(result, query.page, query.limit);
 };
 
 const remove = async (bookId) => {

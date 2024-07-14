@@ -43,12 +43,14 @@ const register = async (request) => {
          }
       });
 
-      const lastMemberId = lastMember ? lastMember.id : 0;
+
+      const lastMemberCode = lastMember ? lastMember.code : 0;
+      const memberCode = `M${(parseInt(lastMemberCode.replace("M", "")) + 1).toString().padStart(3, "0")}`;
 
       const member = await prisma.member.create({
          data: {
             user_id: result.id,
-            code: `M${(lastMemberId + 1).toString().padStart(3, "0")}`
+            code: memberCode
          }
       });
 

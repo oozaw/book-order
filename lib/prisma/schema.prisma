@@ -29,7 +29,7 @@ enum PenaltyStatus {
 }
 
 model User {
-  id        String   @id @default(cuid())
+  id        Int      @id @default(autoincrement())
   email     String   @unique
   name      String
   password  String
@@ -38,11 +38,10 @@ model User {
 
   members      Member[]
   transactions BorrowTransaction[]
-  penalties    Penalty[]
 }
 
 model Book {
-  id        String     @id @default(cuid())
+  id        Int        @id @default(autoincrement())
   title     String
   author    String
   status    BookStatus @default(AVAILABLE)
@@ -55,8 +54,8 @@ model Book {
 }
 
 model Member {
-  id        String   @id @default(cuid())
-  user_id   String
+  id        Int      @id @default(autoincrement())
+  user_id   Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -64,29 +63,32 @@ model Member {
 }
 
 model BorrowTransaction {
-  id        String            @id @default(cuid())
-  user_id   String
-  book_id   String
+  id        Int               @id @default(autoincrement())
+  user_id   Int
+  book_id   Int
   status    TransactionStatus @default(ACTIVE)
   returnAt  DateTime
   createdAt DateTime          @default(now())
   updatedAt DateTime          @updatedAt
 
-  user User @relation(fields: [user_id], references: [id])
-  book Book @relation(fields: [book_id], references: [id])
+  user    User      @relation(fields: [user_id], references: [id])
+  book    Book      @relation(fields: [book_id], references: [id])
+  Penalty Penalty[]
 
   @@index([status])
 }
 
 model Penalty {
-  id        String        @id @default(cuid())
-  user_id   String
-  amount    Float
-  status    PenaltyStatus @default(ACTIVE)
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
+  id             Int           @id @default(autoincrement())
+  transaction_id Int
+  amount         Float
+  status         PenaltyStatus @default(ACTIVE)
+  exceedDays     Int
+  endDate        DateTime
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
 
-  user User @relation(fields: [user_id], references: [id])
+  transaction BorrowTransaction @relation(fields: [transaction_id], references: [id])
 
   @@index([status])
 }

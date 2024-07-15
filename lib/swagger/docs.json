@@ -121,19 +121,22 @@
                   "title": {
                     "type": "string"
                   },
+                  "code": {
+                    "type": "string"
+                  },
                   "author": {
                     "type": "string"
                   },
                   "status": {
-                    "type": "string",
-                    "required": false,
-                    "default": "AVAILABLE"
+                    "type": "string"
                   }
                 }
               },
               "example": {
+                "code": "TGG-12",
                 "title": "The Great Gatsby",
-                "author": "F. Scott Fitzgerald"
+                "author": "F. Scott Fitzgerald",
+                "status": "AVAILABLE"
               }
             }
           }
@@ -178,7 +181,7 @@
         }
       }
     },
-    "/books/{book_id}": {
+    "/books/detail/{book_id}": {
       "get": {
         "tags": [
           "Books"
@@ -206,7 +209,9 @@
             "$ref": "#/components/responses/BookResponse"
           }
         }
-      },
+      }
+    },
+    "/books/{book_id}": {
       "delete": {
         "tags": [
           "Books"
@@ -371,13 +376,13 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "book_id": {
+                  "transaction_id": {
                     "type": "string"
                   }
                 }
               },
               "example": {
-                "book_id": 1
+                "transaction_id": 1
               }
             }
           }
@@ -565,8 +570,10 @@
             "schema": {
               "$ref": "#/components/schemas/SuccessResponse"
             },
-            "example": {
-              "$ref": "#/components/examples/Book"
+            "examples": {
+              "Book": {
+                "$ref": "#/components/examples/Book"
+              }
             }
           }
         }
@@ -578,8 +585,10 @@
             "schema": {
               "$ref": "#/components/schemas/SuccessArrayResponse"
             },
-            "example": {
-              "$ref": "#/components/examples/BooksResponse"
+            "examples": {
+              "Books": {
+                "$ref": "#/components/examples/BooksResponse"
+              }
             }
           }
         }
